@@ -1,5 +1,33 @@
+version: '3'
+
 services:
+  app:
+    image: notification-service:v0.0.1
+    container_name: notification-service
+    environment:
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '8080:8080'
+      - '5005:5005'
+    depends_on:
+      - redis
+    networks:
+      - notification-service-network
+
   redis:
     image: 'redis:latest'
+    container_name: redis
+    hostname: redis
     ports:
+      - '6379:6379'
+    expose:
       - '6379'
+    command: redis-server --port 6379 --bind 0.0.0.0
+    networks:
+      - notification-service-network
+
+networks:
+  notification-service-network:
