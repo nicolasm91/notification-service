@@ -3,7 +3,6 @@ package org.modak.notificationservice.controllers;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.modak.notificationservice.exceptions.ExceededRateException;
-import org.modak.notificationservice.exceptions.InvalidRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -29,9 +28,9 @@ public class ResponseEntityExceptionHandler {
                 .body(Collections.singletonMap(MESSAGE_KEY, exception.getMessage()));
     }
 
-    @ExceptionHandler(value = InvalidRequestException.class)
-    public ResponseEntity<?> invalidRequestHandler(InvalidRequestException exception) {
-        return ResponseEntity.status(exception.getStatus())
+    @ExceptionHandler(value = RuntimeException.class)
+    public ResponseEntity<?> RuntimeExceptionHandler(RuntimeException exception) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Collections.singletonMap(MESSAGE_KEY, exception.getMessage()));
     }
 

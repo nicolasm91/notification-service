@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Slf4j
 @RequestMapping("/api/notifications")
-public class NotificationsController {
+public class NotificationController {
 
     private final NotificationService service;
-    public NotificationsController(NotificationService notificationService) {
+    public NotificationController(NotificationService notificationService) {
         this.service = notificationService;
     }
 
