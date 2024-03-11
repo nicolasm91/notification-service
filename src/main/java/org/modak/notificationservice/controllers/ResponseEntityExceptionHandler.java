@@ -2,6 +2,7 @@ package org.modak.notificationservice.controllers;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import lombok.extern.slf4j.Slf4j;
 import org.modak.notificationservice.exceptions.ExceededRateException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,24 +19,28 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
+@Slf4j
 public class ResponseEntityExceptionHandler {
 
     private static final String MESSAGE_KEY = "message";
 
     @ExceptionHandler(value = ExceededRateException.class)
     public ResponseEntity<?> exceededRateHandler(ExceededRateException exception) {
+        log.error(exception.getMessage());
         return ResponseEntity.status(exception.getStatus())
                 .body(Collections.singletonMap(MESSAGE_KEY, exception.getMessage()));
     }
 
     @ExceptionHandler(value = RuntimeException.class)
     public ResponseEntity<?> RuntimeExceptionHandler(RuntimeException exception) {
+        log.error(exception.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Collections.singletonMap(MESSAGE_KEY, exception.getMessage()));
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<?> invalidRequestHandler(MethodArgumentNotValidException exception) {
+        log.error(exception.getMessage());
 
         Map<String, String> errors = exception.getBindingResult().getAllErrors()
                 .stream()
@@ -49,6 +54,7 @@ public class ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = HttpMessageNotReadableException.class)
     public ResponseEntity<?> invalidRequestHandler(HttpMessageNotReadableException exception) {
+        log.error(exception.getMessage());
 
         if (exception.getCause() instanceof InvalidFormatException cause) {
             String fieldName = cause.getPath()

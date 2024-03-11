@@ -12,6 +12,9 @@ services:
     ports:
       - '8080:8080'
       - '5005:5005'
+    volumes:
+      - ./src:/app/src
+      - ./pom.xml:/app/pom.xml
     depends_on:
       - redis
     networks:
@@ -25,7 +28,7 @@ services:
       - '6379:6379'
     expose:
       - '6379'
-    command: redis-server --port 6379 --bind 0.0.0.0
+    command: redis-server --port 6379 --bind 0.0.0.0 --protected-mode no
     networks:
       - notification-service-network
 
